@@ -17,8 +17,8 @@ Presenter
 #include <stdlib.h>
 #include <math.h>
 
-#define maxThread 5
-//#define maxThread 1
+//#define maxThread 5
+#define maxThread 1
 #define upperBound 50000
 
 int primeListFromThread[maxThread][upperBound / maxThread] = {0};
@@ -78,6 +78,7 @@ int main() {
     }
 
     printf("\n");
+    return 0;
 }
 
 /*
