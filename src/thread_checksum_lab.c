@@ -47,8 +47,23 @@ uint32_t value_for_index(size_t index, int rounds, uint32_t seed) {
 
 void *worker_run(void *arg) {
     WorkerArgs *w = (WorkerArgs *)arg;
+    uint64_t sum = 0;
+    uint32_t xor = 0;
+    uint32_t max = 0;
 
     /* TODO: compute partial_sum, partial_xor, partial_max for range [start, end). */
+    for (size_t i = w->start; i < w->end; ++i){
+        uint32_t value = value_for_index(i, w->rounds, w->seed);
+        sum += value;
+        xor ^= value;
+        if (value > max) {
+            max = value;
+        }
+        w->partial_sum = sum;
+        w->partial_xor = xor;
+        w->partial_max = max;
+    }
+
     (void)w;
 
     return NULL;
