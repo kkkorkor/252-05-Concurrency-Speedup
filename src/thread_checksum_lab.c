@@ -56,11 +56,12 @@ void *worker_run(void *arg) {
         uint32_t value = value_for_index(i, w->rounds, w->seed);
         sum += value;
         xor ^= value;
+
         if (value > max) {
             max = value;
         }
-        
     }
+    
     w->partial_sum = sum;
     w->partial_xor = xor;
     w->partial_max = max;
