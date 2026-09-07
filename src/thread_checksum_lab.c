@@ -59,10 +59,11 @@ void *worker_run(void *arg) {
         if (value > max) {
             max = value;
         }
-        w->partial_sum = sum;
-        w->partial_xor = xor;
-        w->partial_max = max;
+        
     }
+    w->partial_sum = sum;
+    w->partial_xor = xor;
+    w->partial_max = max;
 
     (void)w;
 
@@ -96,8 +97,29 @@ int run_multi(WorkerArgs *args, int thread_count, uint64_t *sum, uint32_t *x, ui
     }
 
     /* TODO: create one thread per chunk and join all threads. */
+    for(int i=0; i<thread_count; i++){
+        pthread_create(&threads[i], NULL, worker_run, &args[i]);
+    }
+
+    for (int i = 0; i < thread_count; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
+    *sum = 0;
+    *x = 0;
+    *maxv = 0;
+
+    for (int i = 0; i < thread_count; i++) {
+        *sum += args[i].partial_sum;
+        *x ^= args[i].partial_xor;
+
+        if (args[i].partial_max > *maxv) {
+            *maxv = args[i].partial_max;
+        }
+    }
+
     free(threads);
-    return -1;
+    return 0;
 }
 
 int main(int argc, char **argv) {
